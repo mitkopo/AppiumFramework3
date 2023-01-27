@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite" parallel="false">
+<listeners>
+<listener class-name="com.qa.listeners.TestListener"/>
+</listeners>
+    <test name="test">
+        <parameter name="platformName" value="Android"></parameter>
+        <parameter name="platformVersion" value="11.0"></parameter>
+        <parameter name="deviceName" value="MitkoPhone"></parameter>
+        <classes>
+            <class name="com.qa.test.LoginTest">
+            <methods>
+                <include name="logIn"/>
+            </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
