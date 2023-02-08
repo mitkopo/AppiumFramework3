@@ -1,15 +1,18 @@
 package com.qa.test;
 
-import com.qa.BaseTest;
+import com.qa.utils.BaseTest;
 import com.qa.pages.LoginPage;
+import io.appium.java_client.AppiumDriver;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class LoginTest extends BaseTest {
+
     LoginPage loginPage;
     InputStream datais;
     JSONObject loginUsers;
@@ -39,7 +42,7 @@ public class LoginTest extends BaseTest {
 
     @BeforeMethod
     public void beforeMethod(){
-            loginPage = new LoginPage();
+            loginPage = new LoginPage(driver);
     }
 
     @AfterMethod

@@ -1,23 +1,26 @@
-package com.qa;
+package com.qa.utils;
 
-import com.qa.utils.TestUtils;
+
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import io.appium.java_client.screenrecording.CanRecordScreen;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Parameters;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
 
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.Properties;
 
 public class BaseTest {
@@ -26,9 +29,41 @@ public class BaseTest {
     protected  static String dateTime;
     InputStream inputStream;
     TestUtils utils;
+    static Logger log = LogManager.getLogger(BaseTest.class.getName());
+    public AppiumDriverLocalService service;
 
-    public BaseTest(){
-        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
+
+    @BeforeMethod(alwaysRun = true)
+    public void beforeMethod(){
+        System.out.println("screen recording started");
+        ((CanRecordScreen)getDriver()).startRecordingScreen();
+
+    }
+
+    @AfterMethod
+    public void afterMethod(ITestResult result){
+        String media = ((CanRecordScreen)getDriver()).stopRecordingScreen();
+
+        Map<String, String> params = result.getTestContext().getCurrentXmlTest().getAllParameters();
+
+        String dir = "videos" + File.separator + params.get("platformName") + "_" + params.get("deviceName")
+                + File.separator + getDateTime() + File.separator + result.getTestClass().getRealClass().getSimpleName();
+
+        File videoDir = new File(dir);
+        if(!videoDir.exists()){
+            videoDir.mkdirs();
+        }
+        FileOutputStream stream = null;
+        try {
+            stream = new FileOutputStream(videoDir + File.separator + result.getName() + ".mp4");
+            stream.write(Base64.decodeBase64(media));
+            stream.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -36,6 +71,8 @@ public class BaseTest {
     @Parameters({"platformName", "platformVersion", "deviceName"})
     @BeforeTest
     public void beforeTest(String platformName, String platformVersion, String deviceName) throws Exception {
+        log.info("this is a info message");
+        log.error("this is a error message");
 
         utils = new TestUtils();
         dateTime = utils.getDateTime();
@@ -44,6 +81,10 @@ public class BaseTest {
             String propFileName = "config.properties";
             inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
             props.load(inputStream);
+
+            service = new AppiumServiceBuilder().withAppiumJS(new File("C:\\Users\\mitpopov\\AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js"))
+                    .withIPAddress("127.0.0.1").usingPort(4723).build();
+            service.start();
 
             DesiredCapabilities caps = new DesiredCapabilities();
             caps.setCapability("platformName", platformName);
@@ -54,12 +95,12 @@ public class BaseTest {
             caps.setCapability("appPackage", props.getProperty("androidAppPackage"));
             caps.setCapability("appActivity", props.getProperty("androidAppActivity"));
             URL appUrl = getClass().getClassLoader().getResource(props.getProperty("androidAppLocation"));
-            caps.setCapability("app", appUrl);
+//            caps.setCapability("app", appUrl);
 
             URL url = new URL(props.getProperty("appiumURL"));
             driver = new AndroidDriver(url, caps);
             String sessionId = driver.getSessionId().toString();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(TestUtils.WAIT));
 
         } catch (Exception e) {
             e.printStackTrace();

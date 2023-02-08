@@ -1,28 +1,35 @@
 package com.qa.pages;
 
-import com.qa.BaseTest;
-import io.appium.java_client.pagefactory.AndroidFindBy;
+import com.qa.utils.BaseTest;
+import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class LoginPage extends BaseTest {
 
-    @AndroidFindBy (xpath= "//android.widget.EditText[@content-desc=\"Username\"]") private WebElement emailField;
-    @AndroidFindBy (xpath ="//android.widget.EditText[@content-desc=\"Password\"]" ) private WebElement passwordField;
-    @AndroidFindBy (xpath = "//android.view.ViewGroup[@content-desc=\"Log In\"]") private WebElement logInCTA;
+    private AppiumDriver driver;
 
+   By emailField = By.xpath("//android.widget.EditText[@content-desc=\"Username\"]");;
+    By passwordField = By.xpath("//android.widget.EditText[@content-desc=\"Password\"]" );
+    By logInCTA = By.xpath("//android.view.ViewGroup[@content-desc=\"Log InS\"]") ;
 
-    public LoginPage enterEmail(String  email){
-        sendKeys(emailField, email);
-        return this;
+    public LoginPage(AppiumDriver driver){
+        this.driver = driver;
     }
 
-    public LoginPage enterPassword(String password){
-        sendKeys(passwordField, password);
-        return this;
+
+    public void enterEmail(String  email){
+        driver.findElement(emailField).sendKeys(email);
+
+    }
+
+    public void enterPassword(String password){
+        driver.findElement(passwordField).sendKeys(password);
+
     }
 
     public LoginPage pressLoginCTA(){
-        click(logInCTA);
+        driver.findElement(logInCTA).click();
         return this;
     }
 
