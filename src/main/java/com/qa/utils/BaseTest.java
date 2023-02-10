@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
@@ -85,26 +86,58 @@ public class BaseTest {
             service = new AppiumServiceBuilder().withAppiumJS(new File("C:\\Users\\mitpopov\\AppData\\Roaming\\npm\\node_modules\\appium\\build\\lib\\main.js"))
                     .withIPAddress("127.0.0.1").usingPort(4723).build();
             service.start();
-
+            instalApp(platformName, platformVersion, deviceName);
             DesiredCapabilities caps = new DesiredCapabilities();
-            caps.setCapability("platformName", platformName);
-//        capabilities.setCapability(CapabilityType.BROWSER_NAME, BROWSER_NAME);
-            caps.setCapability("platformVersion", platformVersion);
-            caps.setCapability("deviceName", deviceName);
-            caps.setCapability("automationName", props.getProperty("androidAutomationName"));
-            caps.setCapability("appPackage", props.getProperty("androidAppPackage"));
-            caps.setCapability("appActivity", props.getProperty("androidAppActivity"));
-            URL appUrl = getClass().getClassLoader().getResource(props.getProperty("androidAppLocation"));
-//            caps.setCapability("app", appUrl);
+//            URL appUrl = getClass().getClassLoader().getResource(props.getProperty("androidAppLocation"));
+//
+//            caps.setCapability("platformName", platformName);
+////        capabilities.setCapability(CapabilityType.BROWSER_NAME, BROWSER_NAME);
+//            caps.setCapability("platformVersion", platformVersion);
+//            caps.setCapability("deviceName", deviceName);
+//            caps.setCapability("automationName", props.getProperty("androidAutomationName"));
+//            caps.setCapability("app", props.getProperty("androidAppLocation"));
 
-            URL url = new URL(props.getProperty("appiumURL"));
-            driver = new AndroidDriver(url, caps);
+//            caps.setCapability("appPackage", props.getProperty("androidAppPackage"));
+//     caps.setCapability("appActivity", props.getProperty("androidAppActivity"));
+
+//            URL url = new URL(props.getProperty("appiumURL"));
+//            driver = new AndroidDriver(url, caps);
             String sessionId = driver.getSessionId().toString();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(TestUtils.WAIT));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void instalApp(String platformName, String platformVersion, String deviceName){
+
+
+        props = new Properties();
+        String propFileName = "config.properties";
+        inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+        try {
+            props.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        DesiredCapabilities caps = new DesiredCapabilities();
+        caps.setCapability("platformName", platformName);
+        caps.setCapability("platformVersion", platformVersion);
+        caps.setCapability("deviceName", deviceName);
+        caps.setCapability("automationName", props.getProperty("androidAutomationName"));
+        caps.setCapability("app", props.getProperty("androidAppLocation"));
+//        caps.setCapability("appPackage", props.getProperty("androidAppPackage"));
+//        caps.setCapability("appActivity", props.getProperty("androidAppActivity"));
+        URL url = null;
+        try {
+            url = new URL(props.getProperty("appiumURL"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        driver = new AndroidDriver(url, caps);
+
     }
 
     public AppiumDriver getDriver(){

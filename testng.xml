@@ -10,9 +10,9 @@
         <parameter name="platformVersion" value="11.0"></parameter>
         <parameter name="deviceName" value="MitkoPhone"></parameter>
         <classes>
-            <class name="com.qa.test.LoginTest">
+            <class name="com.qa.test.TheAppTests">
             <methods>
-                <include name="logIn"/>
+                <include name="test3"/>
             </methods>
             </class>
         </classes>

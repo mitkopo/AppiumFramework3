@@ -9,26 +9,27 @@ public class LoginPage extends BaseTest {
 
     private AppiumDriver driver;
 
-   By emailField = By.xpath("//android.widget.EditText[@content-desc=\"Username\"]");;
-    By passwordField = By.xpath("//android.widget.EditText[@content-desc=\"Password\"]" );
-    By logInCTA = By.xpath("//android.view.ViewGroup[@content-desc=\"Log InS\"]") ;
+    By emailField = By.xpath("//android.widget.EditText[@content-desc=\"Username\"]");
+    ;
+    By passwordField = By.xpath("//android.widget.EditText[@content-desc=\"Password\"]");
+    By logInCTA = By.xpath("//android.view.ViewGroup[@content-desc=\"Log In\"]");
 
-    public LoginPage(AppiumDriver driver){
+    public LoginPage(AppiumDriver driver) {
         this.driver = driver;
     }
 
 
-    public void enterEmail(String  email){
+    public void enterEmail(String email) {
         driver.findElement(emailField).sendKeys(email);
 
     }
 
-    public void enterPassword(String password){
+    public void enterPassword(String password) {
         driver.findElement(passwordField).sendKeys(password);
 
     }
 
-    public LoginPage pressLoginCTA(){
+    public LoginPage pressLoginCTA() {
         driver.findElement(logInCTA).click();
         return this;
     }
