@@ -4,6 +4,8 @@ package com.qa.utils;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.clipboard.ClipboardContentType;
+import io.appium.java_client.clipboard.HasClipboard;
 import io.appium.java_client.screenrecording.CanRecordScreen;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -11,7 +13,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -203,6 +207,18 @@ public class BaseTest {
                 "new UiScrollable(new UiSelector()" + ".scrollable(true)).scrollIntoView("
                         + "new UiSelector().description(\"test-Price\"));"));
     }
+
+    public void setClipboardText(String txt){
+        ((HasClipboard)driver).setClipboardText(txt);
+    }
+
+  public void pasteClipboardText(By element){
+
+      Actions actions = new Actions(driver);
+      actions.keyDown(Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).build().perform();
+  }
+
+
 
 
     public boolean isClickable(By element){

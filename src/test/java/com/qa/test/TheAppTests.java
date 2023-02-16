@@ -12,6 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.sound.sampled.Clip;
 import java.util.List;
 
 public class TheAppTests extends BaseTest {
@@ -74,6 +75,11 @@ public class TheAppTests extends BaseTest {
     @Test
     public void clipboardDemo(){
         TheAppPage.clickClipboardDemo();
+        ClipboardDemo.setClipboardText();
+        ClipboardDemo.pasteClipboardText();
+        Assert.assertTrue(ClipboardDemo.isStaticTextDisplayed());
+        Assert.assertTrue(ClipboardDemo.isClipboardTextDisplayed());
+
     }
 
 
