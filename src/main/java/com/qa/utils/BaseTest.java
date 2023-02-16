@@ -10,6 +10,7 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -143,30 +144,75 @@ public class BaseTest {
     public AppiumDriver getDriver(){
         return driver;
     }
-    public void waitForVisibility(WebElement e){
+    public void waitForVisibility(By element){
         WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(TestUtils.WAIT));
-        wait.until(ExpectedConditions.visibilityOf(e));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(element));
     }
 
-    public void click (WebElement e){
-        waitForVisibility(e);
-        e.click();
+    public void click (By element){
+        waitForVisibility(element);
+        driver.findElement(element).click();
+
+
+    }
+    public boolean isDisplayed(By element){
+        try{
+            waitForVisibility(element);
+            driver.findElement(element);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
-    public void sendKeys(WebElement e, String txt){
-        waitForVisibility(e);
-        e.sendKeys(txt);
+    public Boolean getAttributePassword(By element){
+        try{
+            waitForVisibility(element);
+            driver.findElement(element).getAttribute("password");
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+
     }
 
-    public void getAttribute(WebElement e, String attribute){
-        waitForVisibility(e);
-        e.getAttribute(attribute);
+    public String getText(By element){
+        waitForVisibility(element);
+       return driver.findElement(element).getText();
+    }
+
+    public void sendKeys(By element, String txt){
+        waitForVisibility(element);
+        driver.findElement(element).sendKeys(txt);
+    }
+
+    public void selectElementAndSendKey(By element, String txt){
+        waitForVisibility(element);
+        driver.findElement(element).click();
+        driver.findElement(element).sendKeys(txt);
+    }
+
+    public void getAttribute(By element, String attribute){
+        waitForVisibility(element);
+        driver.findElement(element).getAttribute(attribute);
     }
 
     public WebElement scrollToElement(){
         return driver.findElement(AppiumBy.androidUIAutomator(
                 "new UiScrollable(new UiSelector()" + ".scrollable(true)).scrollIntoView("
                         + "new UiSelector().description(\"test-Price\"));"));
+    }
+
+
+    public boolean isClickable(By element){
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TestUtils.WAIT));
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        return true;
+    } catch (Exception e) {
+        return false;
+    }
     }
 
     public String getDateTime(){
