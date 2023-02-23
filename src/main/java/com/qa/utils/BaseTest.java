@@ -4,17 +4,15 @@ package com.qa.utils;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.clipboard.ClipboardContentType;
 import io.appium.java_client.clipboard.HasClipboard;
 import io.appium.java_client.screenrecording.CanRecordScreen;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.touch.offset.PointOption;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -28,11 +26,12 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 public class BaseTest {
     protected static AppiumDriver driver;
     protected static Properties props;
-    protected  static String dateTime;
+    protected static String dateTime;
     InputStream inputStream;
     TestUtils utils;
     static Logger log = LogManager.getLogger(BaseTest.class.getName());
@@ -40,15 +39,15 @@ public class BaseTest {
 
 
     @BeforeMethod(alwaysRun = true)
-    public void beforeMethod(){
+    public void beforeMethod() {
         System.out.println("screen recording started");
-        ((CanRecordScreen)getDriver()).startRecordingScreen();
+        ((CanRecordScreen) getDriver()).startRecordingScreen();
 
     }
 
     @AfterMethod
-    public void afterMethod(ITestResult result){
-        String media = ((CanRecordScreen)getDriver()).stopRecordingScreen();
+    public void afterMethod(ITestResult result) {
+        String media = ((CanRecordScreen) getDriver()).stopRecordingScreen();
 
         Map<String, String> params = result.getTestContext().getCurrentXmlTest().getAllParameters();
 
@@ -56,7 +55,7 @@ public class BaseTest {
                 + File.separator + getDateTime() + File.separator + result.getTestClass().getRealClass().getSimpleName();
 
         File videoDir = new File(dir);
-        if(!videoDir.exists()){
+        if (!videoDir.exists()) {
             videoDir.mkdirs();
         }
         FileOutputStream stream = null;
@@ -66,8 +65,7 @@ public class BaseTest {
             stream.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -115,7 +113,7 @@ public class BaseTest {
         }
     }
 
-    public void instalApp(String platformName, String platformVersion, String deviceName){
+    public void instalApp(String platformName, String platformVersion, String deviceName) {
 
 
         props = new Properties();
@@ -145,22 +143,24 @@ public class BaseTest {
 
     }
 
-    public AppiumDriver getDriver(){
+    public AppiumDriver getDriver() {
         return driver;
     }
-    public void waitForVisibility(By element){
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(TestUtils.WAIT));
+
+    public void waitForVisibility(By element) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TestUtils.WAIT));
         wait.until(ExpectedConditions.visibilityOfElementLocated(element));
     }
 
-    public void click (By element){
+    public void click(By element) {
         waitForVisibility(element);
         driver.findElement(element).click();
 
 
     }
-    public boolean isDisplayed(By element){
-        try{
+
+    public boolean isDisplayed(By element) {
+        try {
             waitForVisibility(element);
             driver.findElement(element);
             return true;
@@ -170,71 +170,112 @@ public class BaseTest {
 
     }
 
-    public Boolean getAttributePassword(By element){
-        try{
+    public Boolean getAttributePassword(By element) {
+        try {
             waitForVisibility(element);
             driver.findElement(element).getAttribute("password");
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
 
     }
 
-    public String getText(By element){
+    public String getText(By element) {
         waitForVisibility(element);
-       return driver.findElement(element).getText();
+        return driver.findElement(element).getText();
     }
 
-    public void sendKeys(By element, String txt){
+    public void sendKeys(By element, String txt) {
         waitForVisibility(element);
         driver.findElement(element).sendKeys(txt);
     }
 
-    public void selectElementAndSendKey(By element, String txt){
+    public void selectElementAndSendKey(By element, String txt) {
         waitForVisibility(element);
         driver.findElement(element).click();
         driver.findElement(element).sendKeys(txt);
     }
 
-    public void getAttribute(By element, String attribute){
+    public void getAttribute(By element, String attribute) {
         waitForVisibility(element);
         driver.findElement(element).getAttribute(attribute);
     }
 
-    public WebElement scrollToElement(){
+    public WebElement scrollToElement(String txt) {
+        return driver.findElement(AppiumBy.androidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0))"+".scrollIntoView(new UiSelector()"+".textContains(\""+ txt +"\").instance(0))"));
+    }
+
+    public static WebElement scrollToTextByAndroidUIAutomator(By text) {
+
         return driver.findElement(AppiumBy.androidUIAutomator(
-                "new UiScrollable(new UiSelector()" + ".scrollable(true)).scrollIntoView("
-                        + "new UiSelector().description(\"test-Price\"));"));
+                "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + text + "\").instance(0))"));
+
     }
 
-    public void setClipboardText(String txt){
-        ((HasClipboard)driver).setClipboardText(txt);
+    public void reCaptchaHandler(){
+        By reCaptchaLocator = By.xpath("//iframe[contains(@src, 'recaptcha')]");
+        driver.findElement(reCaptchaLocator);
+
+
+        driver.switchTo().frame(driver.findElement(reCaptchaLocator));
+
+
+        By reCaptchaCheckboxLocator = By.xpath("//div[@class='recaptcha-checkbox-border']");
+        driver.findElement(reCaptchaCheckboxLocator).click();
+
+
+        driver.switchTo().defaultContent();
+
+
+        By reCaptchaSuccessLocator = By.xpath("//div[@class='recaptcha-checkbox-checked']");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TestUtils.WAIT));
+        wait.until((ExpectedConditions.invisibilityOfElementLocated(reCaptchaSuccessLocator)));
+
     }
 
-  public void pasteClipboardText(By element){
 
-      Actions actions = new Actions(driver);
-      actions.keyDown(Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).build().perform();
-  }
+    public void switchToWebViewContext() {
+        Set<String> contextNames = ((AndroidDriver)driver).getContextHandles();
+        for (String contextName : contextNames) {
+            if (contextName.contains("WEBVIEW")) {
+                ((AndroidDriver)driver).context(contextName);
+                break;
+            }
+        }
+    }
+
+    public void jsClick(By element) {
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        executor.executeScript("arguments[0].click();", element);
+    }
+
+    public void setClipboardText(String txt) {
+        ((HasClipboard) driver).setClipboardText(txt);
+    }
+
+    public void pasteClipboardText(By element) {
+
+        Actions actions = new Actions(driver);
+        actions.keyDown(Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).build().perform();
+
+    }
 
 
 
-
-    public boolean isClickable(By element){
+    public boolean isClickable(By element) {
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TestUtils.WAIT));
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        return true;
-    } catch (Exception e) {
-        return false;
-    }
-    }
-
-    public String getDateTime(){
-        return  dateTime;
+            wait.until(ExpectedConditions.elementToBeClickable(element));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
+    public String getDateTime() {
+        return dateTime;
+    }
 
 
     @AfterClass

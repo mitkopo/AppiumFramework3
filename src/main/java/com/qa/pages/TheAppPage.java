@@ -35,7 +35,6 @@ public class TheAppPage extends BaseTest {
     By backButton = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.ImageButton");
 
 
-
     public TheAppPage(AppiumDriver driver) {
         this.driver = driver;
 
@@ -47,31 +46,29 @@ public class TheAppPage extends BaseTest {
         System.out.println(driver.findElements(firstScreen).size());
 
 
-
     }
 
     public List<String> getListItemsText() {
 
         List<WebElement> list1 = driver.findElements(firstScreen);
-        List<String>list1text = new ArrayList<>();
-        for(WebElement element: list1){
+        List<String> list1text = new ArrayList<>();
+        for (WebElement element : list1) {
             list1text.add(element.getText());
         }
 
         return list1text;
     }
 
-    public boolean compareText(){
+    public boolean compareText() {
         List<WebElement> listItems = driver.findElements(firstScreen);
         List<String> list2text = new ArrayList<>();
         for (WebElement listItem : listItems) {
             list2text.add(listItem.getText());
-    }
+        }
         return list2text.equals(getListItemsText());
-}
+    }
 
-    public void clickEchoBox(){
-
+    public void clickEchoBox() {
         click(echoBox);
     }
 
@@ -79,12 +76,20 @@ public class TheAppPage extends BaseTest {
         driver.findElement(backButton).click();
     }
 
-    public void clickLoginScreen(){
+    public void clickLoginScreen() {
         click(loginScreen);
     }
 
-    public void clickClipboardDemo(){
+    public void clickClipboardDemo() {
         click(clipBoardDemo);
+    }
+
+    public void clickWebviewDemo() {
+        click(webViewDemo);
+    }
+
+    public void clickphotoDemo() {
+        click(photoDemo);
     }
 
 }

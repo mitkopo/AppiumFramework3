@@ -1,9 +1,6 @@
 package com.qa.test;
 
-import com.qa.pages.ClipboardDemo;
-import com.qa.pages.EchoPage;
-import com.qa.pages.LoginPageApp;
-import com.qa.pages.TheAppPage;
+import com.qa.pages.*;
 
 import com.qa.utils.BaseTest;
 import lombok.extern.java.Log;
@@ -20,8 +17,9 @@ public class TheAppTests extends BaseTest {
     TheAppPage TheAppPage;
     EchoPage EchoPage;
     LoginPageApp LoginPageApp;
-
     ClipboardDemo ClipboardDemo;
+    WebviewDemoPage WebviewDemoPage;
+    PhotoDemopage PhotoDemoPage;
 
     @BeforeMethod
     public void beforeMethod() {
@@ -29,6 +27,8 @@ public class TheAppTests extends BaseTest {
         EchoPage = new EchoPage(driver);
         LoginPageApp = new LoginPageApp(driver);
         ClipboardDemo = new ClipboardDemo(driver);
+        WebviewDemoPage = new WebviewDemoPage(driver);
+        PhotoDemoPage = new PhotoDemopage(driver);
     }
 
     @Test
@@ -80,6 +80,27 @@ public class TheAppTests extends BaseTest {
         Assert.assertTrue(ClipboardDemo.isStaticTextDisplayed());
         Assert.assertTrue(ClipboardDemo.isClipboardTextDisplayed());
 
+    }
+
+    @Test
+    public void webviewDemo() {
+        TheAppPage.clickWebviewDemo();
+        WebviewDemoPage.enterWebPage();
+        WebviewDemoPage.clickGoButton();
+        driver.navigate().back();
+        WebviewDemoPage.switchToWebViewContext();
+        WebviewDemoPage.jsScroll();
+        WebviewDemoPage.isMenuButtonClickable();
+        WebviewDemoPage.enterEmail();
+        WebviewDemoPage.clickSubscribeButton();
+        reCaptchaHandler();
+        //Add time to manually handle reCaptcha 
+    }
+
+    @Test
+    public void photoDemo(){
+        TheAppPage.clickphotoDemo();
+        PhotoDemoPage.test();
     }
 
 

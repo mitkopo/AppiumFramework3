@@ -12,7 +12,7 @@
         <classes>
             <class name="com.qa.test.TheAppTests">
             <methods>
-                <include name="clipboardDemo"/>
+                <include name="photoDemo"/>
             </methods>
             </class>
         </classes>
