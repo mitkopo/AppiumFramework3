@@ -3,14 +3,9 @@ package com.qa.test;
 import com.qa.pages.*;
 
 import com.qa.utils.BaseTest;
-import lombok.extern.java.Log;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import javax.sound.sampled.Clip;
-import java.util.List;
 
 public class TheAppTests extends BaseTest {
 
@@ -19,7 +14,7 @@ public class TheAppTests extends BaseTest {
     LoginPageApp LoginPageApp;
     ClipboardDemo ClipboardDemo;
     WebviewDemoPage WebviewDemoPage;
-    PhotoDemopage PhotoDemoPage;
+    com.qa.pages.PhotoDemoPage PhotoDemoPage;
 
     @BeforeMethod
     public void beforeMethod() {
@@ -28,7 +23,7 @@ public class TheAppTests extends BaseTest {
         LoginPageApp = new LoginPageApp(driver);
         ClipboardDemo = new ClipboardDemo(driver);
         WebviewDemoPage = new WebviewDemoPage(driver);
-        PhotoDemoPage = new PhotoDemopage(driver);
+        PhotoDemoPage = new PhotoDemoPage(driver);
     }
 
     @Test
@@ -98,7 +93,7 @@ public class TheAppTests extends BaseTest {
     }
 
     @Test
-    public void photoDemo(){
+    public void photoDemo() throws InterruptedException {
         TheAppPage.clickphotoDemo();
         PhotoDemoPage.test();
     }

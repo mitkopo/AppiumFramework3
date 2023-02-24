@@ -1,6 +1,7 @@
 package com.qa.utils;
 
 
+import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -13,6 +14,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -24,6 +26,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -90,6 +93,8 @@ public class BaseTest {
                     .withIPAddress("127.0.0.1").usingPort(4723).build();
             service.start();
             instalApp(platformName, platformVersion, deviceName);
+
+
             DesiredCapabilities caps = new DesiredCapabilities();
 //            URL appUrl = getClass().getClassLoader().getResource(props.getProperty("androidAppLocation"));
 //
@@ -113,6 +118,14 @@ public class BaseTest {
         }
     }
 
+//    public void setLocation(){
+//        DesiredCapabilities caps = new DesiredCapabilities();
+//        caps.setCapability("locationProvider", "network");
+//        caps.setCapability("locationLatidude", 32.7607);
+//        caps.setCapability("locationLongtude",-16.9596);
+//        caps.setCapability("locationAccuracy", 1);
+//
+//    }
     public void instalApp(String platformName, String platformVersion, String deviceName) {
 
 
@@ -154,9 +167,21 @@ public class BaseTest {
 
     public void click(By element) {
         waitForVisibility(element);
+        isClickable(element);
         driver.findElement(element).click();
 
 
+    }
+
+    public void waitForVisibilityWebElement(WebElement element){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(TestUtils.WAIT));
+        wait.until(ExpectedConditions.visibilityOf(element));
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+    }
+
+    public void clickWebElement(WebElement element){
+        waitForVisibilityWebElement(element);
+        element.click();
     }
 
     public boolean isDisplayed(By element) {
