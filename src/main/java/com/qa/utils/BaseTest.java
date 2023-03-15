@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.geolocation.AndroidGeoLocation;
 import io.appium.java_client.clipboard.HasClipboard;
 import io.appium.java_client.screenrecording.CanRecordScreen;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
@@ -153,6 +154,9 @@ public class BaseTest {
             throw new RuntimeException(e);
         }
         driver = new AndroidDriver(url, caps);
+        AndroidGeoLocation location = new AndroidGeoLocation(37.7749, -122.4194);
+
+        ((AndroidDriver) driver).setLocation(location);
 
     }
 
